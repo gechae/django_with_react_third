@@ -1,0 +1,11 @@
+
+GET {{MYIP}}:8000/post
+
+
+###
+POST {{MYIP}}:8000/post/
+Content-Type: application/json
+
+{
+  "message": "세번째 포스팅입니다"
+}
