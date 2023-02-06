@@ -1,10 +1,15 @@
+from django.conf import settings
 from django.shortcuts import render
 
 # Create your views here.
+from rest_framework import generics
 from rest_framework.viewsets import ModelViewSet
 from .serializers import PostSerializer
 from .models import Post
 
+class PublicPostListAPIView(generics.ListCreateAPIView):
+    queryset = Post.objects.all() # filter(is_public=True)
+    serializer_class = PostSerializer # 직렬화 하는 방법을 담는다.
 
 class PostViewSet(ModelViewSet):
     queryset = Post.objects.all()
