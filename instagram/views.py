@@ -3,7 +3,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from rest_framework import generics
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
@@ -35,6 +35,21 @@ def public_post_list(request):
 class PostViewSet(ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+
+
+    @action(detail=False, methods=['GET'])
+    def public(self, request):
+        qs = self.get_queryset().filter(is_public=True)
+        serializer = self.get_serializer(qs, many=True)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['PATCH'])
+    def set_public(self, request, pk):
+        instance = self.get_object()
+        instance.is_public = True
+        instance.save(update_fields=['is_public'])
+        serializer = self.get_serializer(instance, many=False)
+        return Response(serializer.data)
 
     # def dispatch(self, request, *args, **kwargs):
     #     # print 비추천, logger 추천(활용성)
