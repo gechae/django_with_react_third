@@ -3,12 +3,15 @@ from django.shortcuts import render
 
 # Create your views here.
 from rest_framework import generics
-from rest_framework.decorators import api_view, action
+from rest_framework.decorators import api_view, action, permission_classes
 from rest_framework.generics import RetrieveAPIView
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
+
+from .permissions import IsAuthorOrReadOnly
 from .serializers import PostSerializer
 from .models import Post
 
@@ -37,8 +40,11 @@ def public_post_list(request):
 class PostViewSet(ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    # authentication_classes = []
+    # 인증이 됨을 보장받을 수 있습니다.
+    #authentication_classes = []
+    permission_classes = [IsAuthenticated, IsAuthorOrReadOnly]
 
+    #@permission_classes([IsAuthenticated])
     def perform_create(self, serializer):
         # FIXME: 인증이 되어있다는 가정하에, author를 지정해보겠습니다.
         author = self.request.user # User or AnonymousUser
