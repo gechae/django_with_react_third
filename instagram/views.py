@@ -4,6 +4,7 @@ from django.shortcuts import render
 # Create your views here.
 from rest_framework import generics
 from rest_framework.decorators import api_view, action, permission_classes
+from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.renderers import TemplateHTMLRenderer
@@ -43,6 +44,10 @@ class PostViewSet(ModelViewSet):
     # 인증이 됨을 보장받을 수 있습니다.
     #authentication_classes = []
     permission_classes = [IsAuthenticated, IsAuthorOrReadOnly]
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['message'] # ?search= ->QuerySet 조건 절에 추가할 필드 지정, 모델 필드중에 문자열 필드만을 지정.
+    # ordering_fields = ['id']  # ?order= -> 정렬을 허용할 필드의 화이트리스트, 미지정 시에 serializer_class에 지정된 필드들
+    # ordering = ['id']         # 디폴트 정렬을 지정
 
     #@permission_classes([IsAuthenticated])
     def perform_create(self, serializer):
