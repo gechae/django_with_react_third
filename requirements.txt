@@ -1,3 +1,4 @@
 django~=3.9.10
 djangorestframework~=3.14.0
-httpie
+httpie~=3.2.1
+djangorestframework-simplejwt~=5.2.2
